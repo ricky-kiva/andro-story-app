@@ -15,4 +15,8 @@
         <!-- Customize your theme here. -->
         <item name="android:textColor">?attr/colorOnSecondary</item>
     </style>
+
+    <style name="OvrOutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">?attr/colorOnSecondary</item>
+    </style>
 </resources>
