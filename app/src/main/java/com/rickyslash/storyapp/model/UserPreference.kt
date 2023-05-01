@@ -15,32 +15,25 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
             UserModel(
                 it[NAME_KEY] ?: "",
                 it[EMAIL_KEY] ?: "",
-                it[PASSWORD_KEY] ?: "",
                 it[STATE_KEY] ?: false,
                 it[TOKEN_KEY] ?: ""
             )
         }
     }
 
-    suspend fun saveUser(user: UserModel) {
+    suspend fun loginSuccess(user: UserModel) {
         dataStore.edit {
             it[NAME_KEY] = user.name
             it[EMAIL_KEY] = user.email
-            it[PASSWORD_KEY] = user.password
-            it[STATE_KEY] = user.isLogin
-            it[TOKEN_KEY] = user.token
-        }
-    }
-
-    suspend fun login(loginToken: String) {
-        dataStore.edit {
             it[STATE_KEY] = true
-            it[TOKEN_KEY] = loginToken
+            it[TOKEN_KEY] = user.token
         }
     }
 
     suspend fun logout() {
         dataStore.edit {
+            it[NAME_KEY] = ""
+            it[EMAIL_KEY] = ""
             it[STATE_KEY] = false
             it[TOKEN_KEY] = ""
         }
@@ -52,7 +45,6 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
 
         private val NAME_KEY = stringPreferencesKey("name")
         private val EMAIL_KEY = stringPreferencesKey("email")
-        private val PASSWORD_KEY = stringPreferencesKey("password")
         private val STATE_KEY = booleanPreferencesKey("state")
         private val TOKEN_KEY = stringPreferencesKey("token")
 
