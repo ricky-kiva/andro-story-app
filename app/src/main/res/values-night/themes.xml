@@ -10,12 +10,25 @@
         <item name="colorSecondaryVariant">@color/teal_EDC</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/black_929</item>
         <!-- Customize your theme here. -->
         <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="actionOverflowButtonStyle">@style/OvrOverflowBlack</item>
     </style>
 
     <style name="OvrOutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">?attr/colorOnSecondary</item>
     </style>
+
+    <style name="OvrSmallButton" parent="Widget.AppCompat.Button">
+        <item name="android:padding">4dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+    </style>
+
+    <style name="OvrOverflowBlack" parent="@style/Widget.AppCompat.ActionButton.Overflow" >
+        <item name="android:tint">@color/black</item>
+    </style>
+
+
 </resources>

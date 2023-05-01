@@ -9,4 +9,10 @@
     <string name="acc_iv_logo">Story App Logo</string>
     <string name="signup">Signup</string>
     <string name="name">Name</string>
+    <string name="acc_user_story">User story</string>
+    <string name="post_date">Post date</string>
+    <string name="empty_description">Description is empty.</string>
+    <string name="whatsup">What\'s up,</string>
+    <string name="anonymous">Anonymous.</string>
+    <string name="greet_name">%s.</string>
 </resources>
