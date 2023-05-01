@@ -6,25 +6,12 @@ import com.rickyslash.storyapp.api.ApiConfig
 import com.rickyslash.storyapp.api.response.LoginResponse
 import com.rickyslash.storyapp.model.UserModel
 import com.rickyslash.storyapp.model.UserPreference
-import com.rickyslash.storyapp.ui.main.MainViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class LoginViewModel(private val pref: UserPreference): ViewModel() {
-
-    private val _loggedUser = MutableLiveData<UserModel>()
-    val loggedUser: LiveData<UserModel> = _loggedUser
-
-    private val _userName = MutableLiveData<String>()
-    val userName: LiveData<String> = _userName
-
-    private val _loginToken = MutableLiveData<String>()
-    val loginToken: LiveData<String> = _loginToken
-
-    private val _userId = MutableLiveData<String>()
-    val userId: LiveData<String> = _userId
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -34,10 +21,6 @@ class LoginViewModel(private val pref: UserPreference): ViewModel() {
 
     private val _responseMessage = MutableLiveData<String?>()
     val responseMessage: LiveData<String?> = _responseMessage
-
-    fun getUser(token: String = ""): LiveData<UserModel> {
-        return pref.getUser().asLiveData()
-    }
 
     fun loginSuccess(user: UserModel) {
         viewModelScope.launch {
