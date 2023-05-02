@@ -70,7 +70,7 @@ class StoryDetailActivity : AppCompatActivity() {
             intent.getParcelableExtra(EXTRA_STORY_ITEM)
         }
         if (data != null) {
-            binding.tvFromName.text = getString(R.string.greet_name, data.name)
+            binding.tvFromName.text = getString(R.string.greet_name, titleSentence(data.name))
             binding.tvName.text = data.name
             binding.tvDate.text = formatDate(data.createdAt)
             binding.tvDesc.text = data.description
@@ -100,6 +100,10 @@ class StoryDetailActivity : AppCompatActivity() {
             "#78909C")
 
         return Color.parseColor(colors[Random.nextInt(colors.size)])
+    }
+
+    fun titleSentence(s: String): String {
+        return s.replaceFirstChar { it.uppercase() }
     }
 
     @SuppressLint("RestrictedApi")

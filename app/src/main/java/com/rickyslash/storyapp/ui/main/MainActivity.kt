@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         observeLoading()
         mainViewModel.getUser().observe(this) { user ->
             if (user.isLogin) {
-                binding.tvGreetName.text = getString(R.string.greet_name, user.name)
+                binding.tvGreetName.text = getString(R.string.greet_name, titleSentence(user.name))
                 setupUserLoggedIn(user.token)
             } else {
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
@@ -127,6 +127,10 @@ class MainActivity : AppCompatActivity() {
                 showStoryDetails(data)
             }
         })
+    }
+
+    fun titleSentence(s: String): String {
+        return s.replaceFirstChar { it.uppercase() }
     }
 
     private fun showLoading(isLoading: Boolean) {
