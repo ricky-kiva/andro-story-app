@@ -82,7 +82,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:id="@+id/iv_detail_img"
+                        android:id="@+id/iv_preview_img"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -95,7 +95,7 @@
                         app:srcCompat="@drawable/img_placeholder" />
 
                     <TextView
-                        android:id="@+id/tv_detail_img_text"
+                        android:id="@+id/tv_preview_img_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|end"
