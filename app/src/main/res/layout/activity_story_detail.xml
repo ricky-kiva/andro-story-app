@@ -77,7 +77,7 @@
             tools:layout_editor_absoluteY="421dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/stDet_cl_image"
+                android:id="@+id/stAdd_cl_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/teal_EDC"
@@ -99,6 +99,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -111,7 +112,7 @@
                 android:paddingEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/stDet_cl_image">
+                app:layout_constraintTop_toBottomOf="@id/stAdd_cl_image">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/story_cl_tag"
