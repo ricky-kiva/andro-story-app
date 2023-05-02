@@ -12,7 +12,12 @@
     <string name="acc_user_story">User story</string>
     <string name="post_date">Post date</string>
     <string name="empty_description">Description is empty.</string>
-    <string name="whatsup">What\'s up,</string>
+    <string name="whatsup">Welcome back,</string>
     <string name="anonymous">Anonymous.</string>
     <string name="greet_name">%s.</string>
+    <string name="story_from">A story by:</string>
+    <string name="label_from">From:</string>
+    <string name="label_date">Date:</string>
+    <string name="acc_stdet_iv_story">Story from %s</string>
+    <string name="label_desc">Description:</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.rickyslash.storyapp.ui.main
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
@@ -12,9 +13,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.ActionBar
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.datastore.preferences.core.Preferences
@@ -60,7 +60,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        // supportActionBar?.hide()
         supportActionBar?.apply {
             val text = SpannableString(supportActionBar?.title)
             text.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@MainActivity, R.color.black)), 0, text.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
@@ -71,7 +70,6 @@ class MainActivity : AppCompatActivity() {
             setHomeActionContentDescription(getString(R.string.app_name))
             setDisplayHomeAsUpEnabled(true)
         }
-        setupRV()
     }
 
     private fun setupViewModel() {
@@ -89,9 +87,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupAction() {
-        binding.btnLogout.setOnClickListener {
-            mainViewModel.logout()
-        }
+        setupRV()
     }
 
     private fun setupUserLoggedIn(token: String) {
@@ -146,9 +142,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.dropdown_menu, menu)
+        if (menu is MenuBuilder) {
+            menu.setOptionalIconsVisible(true)
+        }
         return true
     }
 

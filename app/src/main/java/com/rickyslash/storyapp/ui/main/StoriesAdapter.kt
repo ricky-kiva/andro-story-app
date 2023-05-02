@@ -1,13 +1,18 @@
 package com.rickyslash.storyapp.ui.main
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.api.response.ListStoryItem
 import com.rickyslash.storyapp.databinding.ItemStoryBinding
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.random.Random
 
 class StoriesAdapter(private val storyList: List<ListStoryItem>): RecyclerView.Adapter<StoriesAdapter.ViewHolder>() {
 
@@ -26,10 +31,12 @@ class StoriesAdapter(private val storyList: List<ListStoryItem>): RecyclerView.A
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = storyList[position]
-        holder.binding.storyDetailName.text = data.name
-        holder.binding.storyDetailDate.text = formatDate(data.createdAt)
+        holder.binding.tvName.text = data.name
+        holder.binding.tvDate.text = formatDate(data.createdAt)
+        holder.binding.tvDesc.text = data.description
         Glide.with(holder.itemView.context)
             .load(data.photoUrl)
+            .placeholder(ColorDrawable(getRandomMaterialColor()))
             .into(holder.binding.ivStory)
 
         holder.itemView.setOnClickListener { onItemClickCallback.onItemClicked(storyList[position]) }
@@ -47,6 +54,15 @@ class StoriesAdapter(private val storyList: List<ListStoryItem>): RecyclerView.A
         } catch (e: Exception) {
             dateString
         }
+    }
+
+    private fun getRandomMaterialColor(): Int {
+        val colors = arrayOf("#EF5350", "#EC407A", "#AB47BC", "#7E57C2", "#5C6BC0",
+            "#42A5F5", "#29B6F6", "#26C6DA", "#26A69A", "#66BB6A", "#9CCC65",
+            "#D4E157", "#FFEE58", "#FFA726", "#FF7043", "#8D6E63", "#BDBDBD",
+            "#78909C")
+
+        return Color.parseColor(colors[Random.nextInt(colors.size)])
     }
 
     interface OnItemClickCallback {

@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_story">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/story_cl_details"
+            android:id="@+id/story_cl_tag"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp"
@@ -40,17 +40,17 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/story_detail_name"
+                android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/name"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBaseline_toBaselineOf="@+id/story_detail_date"
+                app:layout_constraintBaseline_toBaselineOf="@+id/tv_date"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/story_detail_date"
+                android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -58,20 +58,20 @@
                 android:text="@string/post_date"
                 android:textColor="?attr/colorOnSecondary"
                 android:textSize="10sp"
-                app:layout_constraintBaseline_toBaselineOf="@id/story_detail_name"
-                app:layout_constraintStart_toEndOf="@+id/story_detail_name" />
+                app:layout_constraintBaseline_toBaselineOf="@id/tv_name"
+                app:layout_constraintStart_toEndOf="@+id/tv_name" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/tv_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:maxLines="3"
+            android:maxLines="2"
             android:text="@string/empty_description"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/story_cl_details" />
+            app:layout_constraintTop_toBottomOf="@id/story_cl_tag" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
