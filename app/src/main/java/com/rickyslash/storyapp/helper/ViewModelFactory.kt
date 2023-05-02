@@ -6,6 +6,7 @@ import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.login.LoginViewModel
 import com.rickyslash.storyapp.ui.main.MainViewModel
 import com.rickyslash.storyapp.ui.signup.SignupViewModel
+import com.rickyslash.storyapp.ui.storydetail.StoryDetailViewModel
 
 class ViewModelFactory(private val pref: UserPreference): ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
@@ -19,6 +20,9 @@ class ViewModelFactory(private val pref: UserPreference): ViewModelProvider.NewI
             }
             modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
                 LoginViewModel(pref) as T
+            }
+            modelClass.isAssignableFrom(StoryDetailViewModel::class.java) -> {
+                StoryDetailViewModel(pref) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }

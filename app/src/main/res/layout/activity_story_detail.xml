@@ -6,4 +6,159 @@
     android:layout_height="match_parent"
     tools:context=".ui.storydetail.StoryDetailActivity">
 
+    <ProgressBar
+        android:id="@+id/stDet_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="?attr/colorOnSecondary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/stDet_cl_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/teal_EDC"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/stDet_cl_from"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/label_from_whatsup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/story_from"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_from_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/anonymous"
+                android:textColor="@color/black"
+                android:textSize="60sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/label_from_whatsup" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:id="@+id/stDet_sv_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/stDet_cl_header">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/stDet_cl_scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="421dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/stDet_cl_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/teal_EDC"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_detail_img"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/acc_stdet_iv_story"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/stDet_cl_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/stDet_cl_image">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/story_cl_tag"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/name"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/tv_date"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:alpha="0.5"
+                        android:text="@string/post_date"
+                        android:textColor="?attr/colorOnSecondary"
+                        android:textSize="10sp"
+                        app:layout_constraintBaseline_toBaselineOf="@id/tv_name"
+                        app:layout_constraintStart_toEndOf="@+id/tv_name" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/tv_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:text="@string/empty_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/story_cl_tag" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
