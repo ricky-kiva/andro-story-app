@@ -102,7 +102,7 @@ class StoryDetailActivity : AppCompatActivity() {
         return Color.parseColor(colors[Random.nextInt(colors.size)])
     }
 
-    fun titleSentence(s: String): String {
+    private fun titleSentence(s: String): String {
         return s.replaceFirstChar { it.uppercase() }
     }
 

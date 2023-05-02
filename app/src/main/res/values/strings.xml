@@ -20,4 +20,13 @@
     <string name="label_date">Date:</string>
     <string name="acc_stdet_iv_story">Story from %s</string>
     <string name="label_desc">Description:</string>
+    <string name="acc_capture_image">Capture image</string>
+    <string name="acc_switch_cam">Switch camera</string>
+    <string name="label_share_story">Share your story,</string>
+    <string name="acc_open_camera">Open camera</string>
+    <string name="acc_open_gallery">Open gallery</string>
+    <string name="acc_write_something">Write something about your story..</string>
+    <string name="acc_upload_story">Upload story</string>
+    <string name="enter_image">Add your slick image</string>
+    <string name="add_story">Add story</string>
 </resources>

@@ -28,6 +28,7 @@ import com.rickyslash.storyapp.api.response.ListStoryItem
 import com.rickyslash.storyapp.databinding.ActivityMainBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
 import com.rickyslash.storyapp.model.UserPreference
+import com.rickyslash.storyapp.ui.addstory.AddStoryActivity
 import com.rickyslash.storyapp.ui.login.LoginActivity
 import com.rickyslash.storyapp.ui.storydetail.StoryDetailActivity
 
@@ -129,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    fun titleSentence(s: String): String {
+    private fun titleSentence(s: String): String {
         return s.replaceFirstChar { it.uppercase() }
     }
 
@@ -160,6 +161,10 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.menu_logout -> {
                 mainViewModel.logout()
+                true
+            }
+            R.id.add_story -> {
+                startActivity(Intent(this@MainActivity, AddStoryActivity::class.java))
                 true
             }
             else -> true

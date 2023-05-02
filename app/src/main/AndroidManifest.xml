@@ -14,6 +14,13 @@
         android:theme="@style/Theme.StoryApp"
         tools:targetApi="31">
         <activity
+            android:name=".ui.addstory.CameraActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.addstory.AddStoryActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" />
+        <activity
             android:name=".ui.storydetail.StoryDetailActivity"
             android:exported="false" />
         <activity
