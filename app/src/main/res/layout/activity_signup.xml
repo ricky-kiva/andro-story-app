@@ -31,6 +31,7 @@
 
         <ImageView
             android:id="@+id/iv_logo"
+            android:transitionName="sharedLogo"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:contentDescription="@string/acc_iv_logo"
@@ -42,6 +43,7 @@
 
         <TextView
             android:id="@+id/tv_title"
+            android:transitionName="sharedTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -64,6 +66,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edtx_layout_name"
                 style="@style/OvrOutlinedBox"
+                android:transitionName="sharedName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -86,6 +89,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edtx_layout_email"
                 style="@style/OvrOutlinedBox"
+                android:transitionName="sharedEmail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -108,6 +112,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edtx_layout_pass"
                 style="@style/OvrOutlinedBox"
+                android:transitionName="sharedPass"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -141,6 +146,7 @@
 
                 <Button
                     android:id="@+id/btn_signup"
+                    android:transitionName="sharedSignup"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:padding="12dp"

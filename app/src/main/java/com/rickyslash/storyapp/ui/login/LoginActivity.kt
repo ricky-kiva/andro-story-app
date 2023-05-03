@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -92,7 +94,18 @@ class LoginActivity : AppCompatActivity() {
             }
         }
         binding.btnSignup.setOnClickListener {
-            startActivity(Intent(this@LoginActivity, SignupActivity::class.java))
+            val intent = Intent(this@LoginActivity, SignupActivity::class.java)
+            val optionsCompat: ActivityOptionsCompat =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    this@LoginActivity,
+                    Pair(binding.ivLogo, "sharedLogo"),
+                    Pair(binding.tvTitle, "sharedTitle"),
+                    Pair(binding.edtxLayoutEmail, "sharedEmail"),
+                    Pair(binding.edtxLayoutPass, "sharedPass"),
+                    Pair(binding.btnSignup, "sharedSignup"),
+                    Pair(binding.loginSpcFakeName, "sharedName")
+                )
+            startActivity(intent, optionsCompat.toBundle())
         }
     }
 
