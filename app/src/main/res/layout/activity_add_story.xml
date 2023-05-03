@@ -162,6 +162,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/teal_EDC"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -177,15 +178,31 @@
             android:padding="16dp"
             app:srcCompat="@drawable/ic_baseline_camera_alt_black_24" />
 
-        <ImageButton
-            android:id="@+id/ib_upload"
+        <FrameLayout
+            android:id="@+id/stAdd_cl_upload"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#00FFFFFF"
-            android:contentDescription="@string/acc_upload_story"
-            android:padding="16dp"
-            app:srcCompat="@drawable/ic_baseline_upload_black_24" />
+            android:background="#00FFFFFF">
+
+            <ImageButton
+                android:id="@+id/ib_upload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
+                android:contentDescription="@string/acc_upload_story"
+                android:padding="16dp"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_baseline_upload_black_24" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:indeterminateTint="@color/black"
+                android:visibility="gone" />
+
+        </FrameLayout>
 
         <ImageButton
             android:id="@+id/ib_gallery"
