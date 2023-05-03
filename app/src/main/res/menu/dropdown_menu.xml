@@ -11,6 +11,11 @@
             app:showAsAction="ifRoom"/>
 
         <item
+            android:id="@+id/menu_translate"
+            android:icon="@drawable/ic_baseline_translate_24"
+            android:title="@string/translate"/>
+
+        <item
             android:id="@+id/menu_logout"
             android:icon="@drawable/ic_baseline_logout_24"
             android:title="@string/logout"/>

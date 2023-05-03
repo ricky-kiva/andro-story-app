@@ -16,6 +16,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import android.Manifest
 import androidx.core.app.ActivityCompat
+import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.databinding.ActivityCameraBinding
 import com.rickyslash.storyapp.helper.createFile
 
@@ -65,7 +66,7 @@ class CameraActivity : AppCompatActivity() {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
             } catch (e: Exception) {
-                Toast.makeText(this@CameraActivity, "Failed to launch camera", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CameraActivity, getString(R.string.camera_launch_failed), Toast.LENGTH_SHORT).show()
             }
         }, ContextCompat.getMainExecutor(this))
     }
@@ -80,7 +81,7 @@ class CameraActivity : AppCompatActivity() {
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    Toast.makeText(this@CameraActivity, "Image captured!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CameraActivity, getString(R.string.camera_captured), Toast.LENGTH_SHORT).show()
                     val intent = Intent()
                     intent.putExtra("picture", photoFile)
                     intent.putExtra("isBackCamera", cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA)
@@ -89,7 +90,7 @@ class CameraActivity : AppCompatActivity() {
                 }
 
                 override fun onError(exception: ImageCaptureException) {
-                    Toast.makeText(this@CameraActivity, "Failed to capture image", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CameraActivity, getString(R.string.camera_capture_failed), Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -103,7 +104,7 @@ class CameraActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (!allPermissionGranted()) {
-                Toast.makeText(this, "Insufficient permission", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.permission_insufficient), Toast.LENGTH_SHORT).show()
                 finish()
             }
         }

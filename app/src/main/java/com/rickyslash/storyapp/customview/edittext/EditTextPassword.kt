@@ -6,14 +6,15 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
-import androidx.appcompat.R
+import androidx.appcompat.R as res
+import com.rickyslash.storyapp.R
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class EditTextPassword @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = R.attr.editTextStyle
+    defStyleAttr: Int = res.attr.editTextStyle
 ): TextInputEditText(context, attrs, defStyleAttr) {
 
     private val passwordRegex = Regex("^.{8,}$")
@@ -29,7 +30,7 @@ class EditTextPassword @JvmOverloads constructor(
             override fun afterTextChanged(s: Editable?) {
                 if (!isValidPassword(s.toString())) {
                     (parent.parent as? TextInputLayout)?.apply {
-                        error = "Password must be at least 8 characters long."
+                        error = context.getString(R.string.warn_pass_8_char)
                         isErrorEnabled = true
                         errorIconDrawable = null
                     }

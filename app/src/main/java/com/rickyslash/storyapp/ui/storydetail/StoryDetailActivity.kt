@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -52,7 +53,7 @@ class StoryDetailActivity : AppCompatActivity() {
         supportActionBar?.apply {
             val text = SpannableString(supportActionBar?.title)
             text.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@StoryDetailActivity, R.color.black)), 0, text.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-            elevation = "0".toFloat()
+            elevation = 0f
             setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@StoryDetailActivity, R.color.teal_EDC)))
             title = text
             setDisplayHomeAsUpEnabled(true)
@@ -105,6 +106,10 @@ class StoryDetailActivity : AppCompatActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 finish()
+                true
+            }
+            R.id.menu_translate -> {
+                startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
                 true
             }
             else -> true

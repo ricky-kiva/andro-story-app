@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Story App</string>
+    <string name="app_name" translatable="false">Story App</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="dev_name">Ricky Fadel M</string>
-    <string name="web">rickyslash.my.id</string>
+    <string name="dev_name" translatable="false">Ricky Fadel M</string>
+    <string name="web" translatable="false">rickyslash.my.id</string>
     <string name="logout">Logout</string>
     <string name="login">Login</string>
     <string name="acc_iv_logo">Story App Logo</string>
@@ -11,7 +11,7 @@
     <string name="name">Name</string>
     <string name="acc_user_story">User story</string>
     <string name="post_date">Post date</string>
-    <string name="empty_description">Description is empty.</string>
+    <string name="empty_description">Description is empty</string>
     <string name="whatsup">Welcome back,</string>
     <string name="anonymous">Anonymous.</string>
     <string name="greet_name">%s.</string>
@@ -29,4 +29,26 @@
     <string name="acc_upload_story">Upload story</string>
     <string name="enter_image">Add your slick image</string>
     <string name="add_story">Add story</string>
+    <string name="ask_enter_name">Enter your name</string>
+    <string name="ask_enter_email">Enter your email</string>
+    <string name="ask_enter_pass">Enter your password</string>
+    <string name="ask_enter_desc">Please add a description</string>
+    <string name="ask_enter_image">Please add an image</string>
+    <string name="wrong_format_email">Please enter a valid email address</string>
+    <string name="ask_choose_pict">Choose a Picture</string>
+    <string name="posted">Posted! 🎉</string>
+    <string name="upload_dialog_title">🚀 Story Launch</string>
+    <string name="upload_dialog_desc">Ready to drop your epic story to the world?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="camera_launch_failed">Failed to launch camera</string>
+    <string name="camera_captured">Image captured!</string>
+    <string name="camera_capture_failed">Failed to capture image</string>
+    <string name="permission_insufficient">Insufficient permission</string>
+    <string name="dev_easter_web" translatable="false">👨‍💻 rickyslash.my.id</string>
+    <string name="warn_pass_8_char">Password must be at least 8 characters long</string>
+    <string name="success">Success</string>
+    <string name="signup_success_desc">Congrats, you\'ve successfully registered! Welcome to the club! 🎉</string>
+    <string name="translate">Translate</string>
+    <string name="list_story_empty">Sadly, the story feed is empty for today</string>
 </resources>

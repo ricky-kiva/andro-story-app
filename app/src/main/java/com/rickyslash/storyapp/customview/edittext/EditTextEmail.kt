@@ -5,14 +5,15 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
-import androidx.appcompat.R
+import androidx.appcompat.R as res
+import com.rickyslash.storyapp.R
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class EditTextEmail @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = R.attr.editTextStyle
+    defStyleAttr: Int = res.attr.editTextStyle
 ): TextInputEditText(context, attrs, defStyleAttr) {
 
     private val emailRegex = Regex("^[\\w+_.-]+@(?:[a-z\\d-]+\\.)+[a-z]{2,}\$")
@@ -27,7 +28,7 @@ class EditTextEmail @JvmOverloads constructor(
             override fun afterTextChanged(s: Editable?) {
                 if (!isValidEmail(s.toString())) {
                     (parent.parent as? TextInputLayout)?.apply {
-                        error = "Please enter a valid email address."
+                        error = context.getString(R.string.wrong_format_email)
                         isErrorEnabled = true
                         errorIconDrawable = null
                     }
