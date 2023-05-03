@@ -31,6 +31,7 @@ import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.addstory.AddStoryActivity
 import com.rickyslash.storyapp.ui.login.LoginActivity
 import com.rickyslash.storyapp.ui.storydetail.StoryDetailActivity
+import com.rickyslash.storyapp.helper.titleSentence
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.apply {
             val text = SpannableString(supportActionBar?.title)
             text.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@MainActivity, R.color.black)), 0, text.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-            elevation = "0".toFloat()
+            elevation = 0f
             setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@MainActivity, R.color.teal_EDC)))
             title = text
             setHomeAsUpIndicator(R.drawable.ic_polaroid_black_24)
@@ -75,16 +76,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewModel() {
         mainViewModel = ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(dataStore)))[MainViewModel::class.java]
-        observeLoading()
         mainViewModel.getUser().observe(this) { user ->
-            if (user.isLogin) {
-                binding.tvGreetName.text = getString(R.string.greet_name, titleSentence(user.name))
-                setupUserLoggedIn(user.token)
-            } else {
+            if (!user.isLogin) {
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
                 finish()
+            } else {
+                binding.tvGreetName.text = getString(R.string.greet_name, titleSentence(user.name))
+                setupUserLoggedIn(user.token)
             }
         }
+        observeLoading()
     }
 
     private fun setupAction() {
@@ -130,10 +131,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun titleSentence(s: String): String {
-        return s.replaceFirstChar { it.uppercase() }
-    }
-
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.mainClHeader.visibility = if (isLoading) View.GONE else View.VISIBLE
@@ -159,6 +156,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            android.R.id.home -> {
+                Toast.makeText(this@MainActivity, "\uD83D\uDC68\u200D\uD83D\uDCBB rickyslash.my.id", Toast.LENGTH_SHORT).show()
+                true
+            }
             R.id.menu_logout -> {
                 mainViewModel.logout()
                 true

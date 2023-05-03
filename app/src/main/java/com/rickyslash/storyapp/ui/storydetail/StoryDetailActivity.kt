@@ -2,6 +2,7 @@ package com.rickyslash.storyapp.ui.storydetail
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -23,10 +24,13 @@ import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.api.response.ListStoryItem
 import com.rickyslash.storyapp.databinding.ActivityStoryDetailBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
+import com.rickyslash.storyapp.helper.formatDate
+import com.rickyslash.storyapp.helper.getRandomMaterialColor
+import com.rickyslash.storyapp.helper.titleSentence
 import com.rickyslash.storyapp.model.UserPreference
+import com.rickyslash.storyapp.ui.login.LoginActivity
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.random.Random
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -81,35 +85,10 @@ class StoryDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun formatDate(dateString: String): String {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-        inputFormat.timeZone = TimeZone.getTimeZone("UTC")
-        return try {
-            val date = inputFormat.parse(dateString)
-            outputFormat.format(date!!)
-        } catch (e: Exception) {
-            dateString
-        }
-    }
-
-    private fun getRandomMaterialColor(): Int {
-        val colors = arrayOf("#EF5350", "#EC407A", "#AB47BC", "#7E57C2", "#5C6BC0",
-            "#42A5F5", "#29B6F6", "#26C6DA", "#26A69A", "#66BB6A", "#9CCC65",
-            "#D4E157", "#FFEE58", "#FFA726", "#FF7043", "#8D6E63", "#BDBDBD",
-            "#78909C")
-
-        return Color.parseColor(colors[Random.nextInt(colors.size)])
-    }
-
-    private fun titleSentence(s: String): String {
-        return s.replaceFirstChar { it.uppercase() }
-    }
-
     @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.dropdown_menu, menu)
+        inflater.inflate(R.menu.minimal_menu, menu)
         if (menu is MenuBuilder) {
             menu.setOptionalIconsVisible(true)
         }
@@ -124,6 +103,10 @@ class StoryDetailActivity : AppCompatActivity() {
             }
             R.id.menu_logout -> {
                 storyDetailViewModel.logout()
+                val intent = Intent(this@StoryDetailActivity, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+                finish()
                 true
             }
             else -> true
