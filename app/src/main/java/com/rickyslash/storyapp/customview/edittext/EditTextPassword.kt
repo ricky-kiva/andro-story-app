@@ -1,6 +1,7 @@
 package com.rickyslash.storyapp.customview.edittext
 
 import android.content.Context
+import android.graphics.Typeface
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -19,6 +20,7 @@ class EditTextPassword @JvmOverloads constructor(
 
     init {
         inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        typeface = Typeface.DEFAULT
         addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -45,6 +47,5 @@ class EditTextPassword @JvmOverloads constructor(
     private fun isValidPassword(password: String): Boolean {
         return passwordRegex.matches(password)
     }
-
 
 }
