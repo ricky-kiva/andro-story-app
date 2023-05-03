@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rickyslash.storyapp.databinding.ActivitySignupBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
+import com.rickyslash.storyapp.helper.isValidEmail
 import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.login.LoginActivity
 
@@ -61,6 +62,12 @@ class SignupActivity : AppCompatActivity() {
                 }
                 password.isEmpty() -> {
                     binding.edtxLayoutPass.error = "Enter your password"
+                }
+                (password.length < 8) -> {
+                    Toast.makeText(this@SignupActivity, "Password must be at least 8 characters long.", Toast.LENGTH_SHORT).show()
+                }
+                (!isValidEmail(email)) -> {
+                    Toast.makeText(this@SignupActivity, "Please enter a valid email address.", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     isLoadingObserver = Observer { showLoading(it) }

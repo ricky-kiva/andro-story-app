@@ -108,3 +108,8 @@ fun formatDate(dateString: String): String {
         dateString
     }
 }
+
+fun isValidEmail(email: String): Boolean {
+    val emailRegex = Regex("^[\\w+_.-]+@(?:[a-z\\d-]+\\.)+[a-z]{2,}\$")
+    return emailRegex.matches(email)
+}

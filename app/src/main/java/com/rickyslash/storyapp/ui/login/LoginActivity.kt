@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rickyslash.storyapp.databinding.ActivityLoginBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
+import com.rickyslash.storyapp.helper.isValidEmail
 import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.main.MainActivity
 import com.rickyslash.storyapp.ui.signup.SignupActivity
@@ -58,6 +59,9 @@ class LoginActivity : AppCompatActivity() {
                 password.isEmpty() -> {
                     binding.edtxLayoutPass.error = "Enter your password"
                 }
+                (!isValidEmail(email)) -> {
+                    Toast.makeText(this@LoginActivity, "Please enter a valid email address.", Toast.LENGTH_SHORT).show()
+                }
                 else -> {
                     isLoadingObserver = Observer { showLoading(it) }
                     isLoadingObserver?.let {
@@ -99,6 +103,10 @@ class LoginActivity : AppCompatActivity() {
         isLoadingObserver?.let(loginViewModel.isLoading::removeObserver)
     }
 
+    private fun showLoading(isLoading: Boolean) {
+        binding.loginProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
     private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
         observe(owner, object : Observer<T> {
             override fun onChanged(value: T) {
@@ -106,10 +114,6 @@ class LoginActivity : AppCompatActivity() {
                 removeObserver(this)
             }
         })
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        binding.loginProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
 }
