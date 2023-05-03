@@ -3,7 +3,6 @@ package com.rickyslash.storyapp.ui.storydetail
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +28,6 @@ import com.rickyslash.storyapp.helper.getRandomMaterialColor
 import com.rickyslash.storyapp.helper.titleSentence
 import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.login.LoginActivity
-import java.text.SimpleDateFormat
 import java.util.*
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")

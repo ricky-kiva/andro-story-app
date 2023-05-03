@@ -78,7 +78,9 @@ class MainActivity : AppCompatActivity() {
         mainViewModel = ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(dataStore)))[MainViewModel::class.java]
         mainViewModel.getUser().observe(this) { user ->
             if (!user.isLogin) {
-                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                intent = Intent(this@MainActivity, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
                 finish()
             } else {
                 binding.tvGreetName.text = getString(R.string.greet_name, titleSentence(user.name))

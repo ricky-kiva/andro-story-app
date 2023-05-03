@@ -1,26 +1,18 @@
 package com.rickyslash.storyapp.ui.signup
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rickyslash.storyapp.databinding.ActivitySignupBinding
-import com.rickyslash.storyapp.helper.ViewModelFactory
 import com.rickyslash.storyapp.helper.isValidEmail
-import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.login.LoginActivity
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class SignupActivity : AppCompatActivity() {
 
@@ -45,7 +37,7 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        signupViewModel = ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(dataStore)))[SignupViewModel::class.java]
+        signupViewModel = ViewModelProvider(this)[SignupViewModel::class.java]
     }
 
     private fun setupAction() {
@@ -97,22 +89,6 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        isErrorObserver?.let(signupViewModel.isError::removeObserver)
-        responseMessageObserver?.let(signupViewModel.responseMessage::removeObserver)
-        isLoadingObserver?.let(signupViewModel.isLoading::removeObserver)
-    }
-
-    private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
-        observe(owner, object : Observer<T> {
-            override fun onChanged(value: T) {
-                observer.onChanged(value)
-                removeObserver(this)
-            }
-        })
-    }
-
     private fun dialogSignupSuccess(intent: Intent) {
         AlertDialog.Builder(this).apply {
             setTitle("Success")
@@ -129,6 +105,22 @@ class SignupActivity : AppCompatActivity() {
 
     private fun showLoading(isLoading: Boolean) {
         binding.signupProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isErrorObserver?.let(signupViewModel.isError::removeObserver)
+        responseMessageObserver?.let(signupViewModel.responseMessage::removeObserver)
+        isLoadingObserver?.let(signupViewModel.isLoading::removeObserver)
+    }
+
+    private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
+        observe(owner, object : Observer<T> {
+            override fun onChanged(value: T) {
+                observer.onChanged(value)
+                removeObserver(this)
+            }
+        })
     }
 
 }

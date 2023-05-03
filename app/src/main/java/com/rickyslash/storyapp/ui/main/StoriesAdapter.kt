@@ -1,20 +1,14 @@
 package com.rickyslash.storyapp.ui.main
 
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.api.response.ListStoryItem
 import com.rickyslash.storyapp.databinding.ItemStoryBinding
 import com.rickyslash.storyapp.helper.formatDate
 import com.rickyslash.storyapp.helper.getRandomMaterialColor
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.random.Random
 
 class StoriesAdapter(private val storyList: List<ListStoryItem>): RecyclerView.Adapter<StoriesAdapter.ViewHolder>() {
 

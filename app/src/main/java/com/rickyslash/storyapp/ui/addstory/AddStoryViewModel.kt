@@ -4,18 +4,14 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.rickyslash.storyapp.api.ApiConfig
 import com.rickyslash.storyapp.api.response.AddStoryResponse
-import com.rickyslash.storyapp.api.response.AllStoriesResponse
 import com.rickyslash.storyapp.model.UserModel
 import com.rickyslash.storyapp.model.UserPreference
-import com.rickyslash.storyapp.ui.login.LoginViewModel
-import com.rickyslash.storyapp.ui.main.MainViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.http.Multipart
 
 class AddStoryViewModel(private val pref: UserPreference): ViewModel() {
 
@@ -58,7 +54,7 @@ class AddStoryViewModel(private val pref: UserPreference): ViewModel() {
                     _isLoading.value = false
                     _isError.value = true
                     _responseMessage.value = response.message()
-                    Log.e(AddStoryViewModel.TAG, "isNotSuccessful: ${response.message()}")
+                    Log.e(TAG, "isNotSuccessful: ${response.message()}")
                     _responseMessage.value = null
                 }
             }
@@ -67,7 +63,7 @@ class AddStoryViewModel(private val pref: UserPreference): ViewModel() {
                 _isLoading.value = false
                 _isError.value = true
                 _responseMessage.value = t.message
-                Log.e(AddStoryViewModel.TAG, "onFailure: ${t.message}")
+                Log.e(TAG, "onFailure: ${t.message}")
                 _responseMessage.value = null
             }
         })

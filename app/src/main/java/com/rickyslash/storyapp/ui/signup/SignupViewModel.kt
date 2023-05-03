@@ -6,12 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rickyslash.storyapp.api.ApiConfig
 import com.rickyslash.storyapp.api.response.RegisterResponse
-import com.rickyslash.storyapp.model.UserPreference
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SignupViewModel(private val pref: UserPreference): ViewModel() {
+class SignupViewModel: ViewModel() {
 
     private val _responseMessage = MutableLiveData<String?>()
     val responseMessage: LiveData<String?> = _responseMessage
