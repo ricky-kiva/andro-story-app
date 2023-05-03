@@ -6,10 +6,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.databinding.ActivitySignupBinding
 import com.rickyslash.storyapp.helper.isValidEmail
 import com.rickyslash.storyapp.ui.login.LoginActivity
@@ -47,19 +46,19 @@ class SignupActivity : AppCompatActivity() {
             val password = binding.edtxPass.text.toString()
             when {
                 name.isEmpty() -> {
-                    binding.edtxLayoutName.error = "Enter your name"
+                    binding.edtxLayoutName.error = getString(R.string.ask_enter_name)
                 }
                 email.isEmpty() -> {
-                    binding.edtxLayoutEmail.error = "Enter your email"
+                    binding.edtxLayoutEmail.error = getString(R.string.ask_enter_email)
                 }
                 password.isEmpty() -> {
-                    binding.edtxLayoutPass.error = "Enter your password"
+                    binding.edtxLayoutPass.error = getString(R.string.ask_enter_pass)
                 }
                 (password.length < 8) -> {
-                    Toast.makeText(this@SignupActivity, "Password must be at least 8 characters long.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SignupActivity, getString(R.string.warn_pass_8_char), Toast.LENGTH_SHORT).show()
                 }
                 (!isValidEmail(email)) -> {
-                    Toast.makeText(this@SignupActivity, "Please enter a valid email address.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SignupActivity, getString(R.string.wrong_format_email), Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     isLoadingObserver = Observer { showLoading(it) }
@@ -70,20 +69,15 @@ class SignupActivity : AppCompatActivity() {
                     isErrorObserver = Observer { isError ->
                         if (!isError) {
                             dialogSignupSuccess(Intent(this@SignupActivity, LoginActivity::class.java))
-                        } else {
-                            responseMessageObserver = Observer { responseMessage ->
-                                if (responseMessage != null) {
-                                    Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                            responseMessageObserver?.let {
-                                signupViewModel.responseMessage.observeOnce(this, it)
-                            }
                         }
                     }
-                    isErrorObserver?.let {
-                        signupViewModel.isError.observe(this, it)
+                    responseMessageObserver = Observer { responseMessage ->
+                        if (responseMessage != null && signupViewModel.isError.value == true) {
+                            Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
+                        }
                     }
+                    isErrorObserver?.let { signupViewModel.isError.observe(this, it) }
+                    responseMessageObserver?.let { signupViewModel.responseMessage.observe(this, it) }
                 }
             }
         }
@@ -91,9 +85,9 @@ class SignupActivity : AppCompatActivity() {
 
     private fun dialogSignupSuccess(intent: Intent) {
         AlertDialog.Builder(this).apply {
-            setTitle("Success")
-            setMessage("Congrats, you've successfully registered! Welcome to the club! \uD83C\uDF89")
-            setPositiveButton("Login") { _, _ ->
+            setTitle(getString(R.string.success))
+            setMessage(getString(R.string.signup_success_desc))
+            setPositiveButton(getString(R.string.login)) { _, _ ->
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 finish()
@@ -112,15 +106,6 @@ class SignupActivity : AppCompatActivity() {
         isErrorObserver?.let(signupViewModel.isError::removeObserver)
         responseMessageObserver?.let(signupViewModel.responseMessage::removeObserver)
         isLoadingObserver?.let(signupViewModel.isLoading::removeObserver)
-    }
-
-    private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
-        observe(owner, object : Observer<T> {
-            override fun onChanged(value: T) {
-                observer.onChanged(value)
-                removeObserver(this)
-            }
-        })
     }
 
 }

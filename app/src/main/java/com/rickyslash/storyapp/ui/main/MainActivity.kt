@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -13,13 +13,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,11 +26,11 @@ import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.api.response.ListStoryItem
 import com.rickyslash.storyapp.databinding.ActivityMainBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
+import com.rickyslash.storyapp.helper.titleSentence
 import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.addstory.AddStoryActivity
 import com.rickyslash.storyapp.ui.login.LoginActivity
 import com.rickyslash.storyapp.ui.storydetail.StoryDetailActivity
-import com.rickyslash.storyapp.helper.titleSentence
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -99,22 +98,23 @@ class MainActivity : AppCompatActivity() {
         isErrorObserver = Observer { isError ->
             if (!isError) {
                 mainViewModel.listStoryItem.observe(this) {
-                    setStoriesData(it)
-                }
-            } else {
-                responseMessageObserver = Observer { responseMessage ->
-                    if (responseMessage != null) {
-                        Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
+                    if (it.isNotEmpty()) {
+                        binding.tvGreetWhatsup.text = getString(R.string.whatsup)
+                        setStoriesData(it)
+                    } else {
+                        binding.tvGreetWhatsup.text = getString(R.string.list_story_empty)
+                        Toast.makeText(this, getString(R.string.list_story_empty), Toast.LENGTH_SHORT).show()
                     }
-                }
-                responseMessageObserver?.let {
-                    mainViewModel.responseMessage.observeOnce(this, it)
                 }
             }
         }
-        isErrorObserver?.let {
-            mainViewModel.isError.observe(this, it)
+        responseMessageObserver = Observer { responseMessage ->
+            if (responseMessage != null && mainViewModel.isError.value == true) {
+                Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
+            }
         }
+        isErrorObserver?.let { mainViewModel.isError.observe(this, it) }
+        responseMessageObserver?.let { mainViewModel.responseMessage.observe(this, it) }
     }
 
     private fun setupRV() {
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                Toast.makeText(this@MainActivity, "\uD83D\uDC68\u200D\uD83D\uDCBB rickyslash.my.id", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, getString(R.string.dev_easter_web), Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.menu_logout -> {
@@ -168,6 +168,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.add_story -> {
                 startActivity(Intent(this@MainActivity, AddStoryActivity::class.java))
+                true
+            }
+            R.id.menu_translate -> {
+                startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
                 true
             }
             else -> true
@@ -179,15 +183,6 @@ class MainActivity : AppCompatActivity() {
         isErrorObserver?.let(mainViewModel.isError::removeObserver)
         responseMessageObserver?.let(mainViewModel.responseMessage::removeObserver)
         isLoadingObserver?.let(mainViewModel.isLoading::removeObserver)
-    }
-
-    private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
-        observe(owner, object : Observer<T> {
-            override fun onChanged(value: T) {
-                observer.onChanged(value)
-                removeObserver(this)
-            }
-        })
     }
 
 }

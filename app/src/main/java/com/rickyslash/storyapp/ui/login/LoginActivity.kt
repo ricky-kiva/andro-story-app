@@ -11,10 +11,9 @@ import androidx.core.util.Pair
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.databinding.ActivityLoginBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
 import com.rickyslash.storyapp.helper.isValidEmail
@@ -56,13 +55,13 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.edtxPass.text.toString()
             when {
                 email.isEmpty() -> {
-                    binding.edtxLayoutEmail.error = "Enter your email"
+                    binding.edtxLayoutEmail.error = getString(R.string.ask_enter_email)
                 }
                 password.isEmpty() -> {
-                    binding.edtxLayoutPass.error = "Enter your password"
+                    binding.edtxLayoutPass.error = getString(R.string.ask_enter_pass)
                 }
                 (!isValidEmail(email)) -> {
-                    Toast.makeText(this@LoginActivity, "Please enter a valid email address.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, getString(R.string.wrong_format_email), Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     isLoadingObserver = Observer { showLoading(it) }
@@ -76,20 +75,15 @@ class LoginActivity : AppCompatActivity() {
                             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
                             finish()
-                        } else {
-                            responseMessageObserver = Observer { responseMessage ->
-                                if (responseMessage != null) {
-                                    Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                            responseMessageObserver?.let {
-                                loginViewModel.responseMessage.observeOnce(this, it)
-                            }
                         }
                     }
-                    isErrorObserver?.let {
-                        loginViewModel.isError.observe(this, it)
+                    responseMessageObserver = Observer { responseMessage ->
+                        if (responseMessage != null && loginViewModel.isError.value == true) {
+                            Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
+                        }
                     }
+                    isErrorObserver?.let { loginViewModel.isError.observe(this, it) }
+                    responseMessageObserver?.let { loginViewModel.responseMessage.observe(this, it) }
                 }
             }
         }
@@ -118,15 +112,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showLoading(isLoading: Boolean) {
         binding.loginProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
-        observe(owner, object : Observer<T> {
-            override fun onChanged(value: T) {
-                observer.onChanged(value)
-                removeObserver(this)
-            }
-        })
     }
 
 }

@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -24,8 +25,6 @@ import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rickyslash.storyapp.R
@@ -139,7 +138,7 @@ class AddStoryActivity : AppCompatActivity() {
         intent.action = ACTION_GET_CONTENT
         intent.type = "image/*"
 
-        val chooser = Intent.createChooser(intent, "Choose a Picture")
+        val chooser = Intent.createChooser(intent, getString(R.string.ask_choose_pict))
         launcherIntentGallery.launch(chooser)
     }
 
@@ -157,10 +156,10 @@ class AddStoryActivity : AppCompatActivity() {
                 val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData("photo", file.name, requestImageFile)
                 dialogOnUpload(token, imageMultipart, desc)
             } else {
-                Toast.makeText(this@AddStoryActivity, "Please add a description", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AddStoryActivity, getString(R.string.ask_enter_desc), Toast.LENGTH_SHORT).show()
             }
         } else {
-            Toast.makeText(this@AddStoryActivity, "Please add an image", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@AddStoryActivity, getString(R.string.ask_enter_image), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -168,35 +167,30 @@ class AddStoryActivity : AppCompatActivity() {
         addStoryViewModel.uploadStory(token, file, desc)
         isErrorObserver = Observer { isError ->
             if (!isError) {
-                Toast.makeText(this, "Posted! \uD83C\uDF89", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.posted), Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@AddStoryActivity, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 finish()
-            } else {
-                responseMessageObserver = Observer { responseMessage ->
-                    if (responseMessage != null) {
-                        Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
-                    }
-                }
-                responseMessageObserver?.let {
-                    addStoryViewModel.responseMessage.observeOnce(this, it)
-                }
             }
         }
-        isErrorObserver?.let {
-            addStoryViewModel.isError.observe(this, it)
+        responseMessageObserver = Observer { responseMessage ->
+            if (responseMessage != null && addStoryViewModel.isError.value == true) {
+                Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
+            }
         }
+        isErrorObserver?.let { addStoryViewModel.isError.observe(this, it) }
+        responseMessageObserver?.let { addStoryViewModel.responseMessage.observe(this, it) }
     }
 
     private fun dialogOnUpload(token: String, file: MultipartBody.Part, desc: RequestBody) {
         AlertDialog.Builder(this).apply {
-            setTitle("\uD83D\uDE80 Story Launch")
-            setMessage("Ready to drop your epic story to the world?")
-            setPositiveButton("Yes") { _, _ ->
+            setTitle(getString(R.string.upload_dialog_title))
+            setMessage(getString(R.string.upload_dialog_desc))
+            setPositiveButton(getString(R.string.yes)) { _, _ ->
                 processUploadStory(token, file, desc)
             }
-            setNegativeButton("No") { dialog, _ ->
+            setNegativeButton(getString(R.string.no)) { dialog, _ ->
                 dialog.dismiss()
             }
             create()
@@ -236,6 +230,10 @@ class AddStoryActivity : AppCompatActivity() {
                 addStoryViewModel.logout()
                 true
             }
+            R.id.menu_translate -> {
+                startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+                true
+            }
             else -> true
         }
     }
@@ -245,15 +243,6 @@ class AddStoryActivity : AppCompatActivity() {
         isErrorObserver?.let(addStoryViewModel.isError::removeObserver)
         responseMessageObserver?.let(addStoryViewModel.responseMessage::removeObserver)
         isLoadingObserver?.let(addStoryViewModel.isLoading::removeObserver)
-    }
-
-    private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
-        observe(owner, object : Observer<T> {
-            override fun onChanged(value: T) {
-                observer.onChanged(value)
-                removeObserver(this)
-            }
-        })
     }
 
     companion object {
