@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.databinding.ActivitySignupBinding
-import com.rickyslash.storyapp.helper.isValidEmail
 import com.rickyslash.storyapp.ui.login.LoginActivity
 
 class SignupActivity : AppCompatActivity() {
@@ -48,17 +47,11 @@ class SignupActivity : AppCompatActivity() {
                 name.isEmpty() -> {
                     binding.edtxLayoutName.error = getString(R.string.ask_enter_name)
                 }
-                email.isEmpty() -> {
-                    binding.edtxLayoutEmail.error = getString(R.string.ask_enter_email)
-                }
-                password.isEmpty() -> {
-                    binding.edtxLayoutPass.error = getString(R.string.ask_enter_pass)
-                }
-                (password.length < 8) -> {
-                    Toast.makeText(this@SignupActivity, getString(R.string.warn_pass_8_char), Toast.LENGTH_SHORT).show()
-                }
-                (!isValidEmail(email)) -> {
+                (!binding.edtxLayoutEmail.error.isNullOrEmpty()) -> {
                     Toast.makeText(this@SignupActivity, getString(R.string.wrong_format_email), Toast.LENGTH_SHORT).show()
+                }
+                (!binding.edtxLayoutPass.error.isNullOrEmpty()) -> {
+                    Toast.makeText(this@SignupActivity, getString(R.string.warn_pass_8_char), Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     isLoadingObserver = Observer { showLoading(it) }

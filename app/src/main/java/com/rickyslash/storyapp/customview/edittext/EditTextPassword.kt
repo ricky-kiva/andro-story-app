@@ -39,7 +39,6 @@ class EditTextPassword @JvmOverloads constructor(
                         error = null
                         isErrorEnabled = false
                     }
-
                 }
             }
         })

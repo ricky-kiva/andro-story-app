@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.databinding.ActivityLoginBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
-import com.rickyslash.storyapp.helper.isValidEmail
 import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.main.MainActivity
 import com.rickyslash.storyapp.ui.signup.SignupActivity
@@ -54,14 +53,11 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.edtxEmail.text.toString()
             val password = binding.edtxPass.text.toString()
             when {
-                email.isEmpty() -> {
-                    binding.edtxLayoutEmail.error = getString(R.string.ask_enter_email)
-                }
-                password.isEmpty() -> {
-                    binding.edtxLayoutPass.error = getString(R.string.ask_enter_pass)
-                }
-                (!isValidEmail(email)) -> {
+                (!binding.edtxLayoutEmail.error.isNullOrEmpty()) -> {
                     Toast.makeText(this@LoginActivity, getString(R.string.wrong_format_email), Toast.LENGTH_SHORT).show()
+                }
+                (!binding.edtxLayoutPass.error.isNullOrEmpty()) -> {
+                    Toast.makeText(this@LoginActivity, getString(R.string.warn_pass_8_char), Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     isLoadingObserver = Observer { showLoading(it) }
