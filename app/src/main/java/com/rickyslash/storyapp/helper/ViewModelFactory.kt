@@ -6,6 +6,7 @@ import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.addstory.AddStoryViewModel
 import com.rickyslash.storyapp.ui.login.LoginViewModel
 import com.rickyslash.storyapp.ui.main.MainViewModel
+import com.rickyslash.storyapp.ui.maps.MapsViewModel
 import com.rickyslash.storyapp.ui.storydetail.StoryDetailViewModel
 
 class ViewModelFactory(private val pref: UserPreference): ViewModelProvider.NewInstanceFactory() {
@@ -23,6 +24,9 @@ class ViewModelFactory(private val pref: UserPreference): ViewModelProvider.NewI
             }
             modelClass.isAssignableFrom(AddStoryViewModel::class.java) -> {
                 AddStoryViewModel(pref) as T
+            }
+            modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
+                MapsViewModel(pref) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }

@@ -52,4 +52,6 @@
     <string name="signup_success_desc">Selamat, kamu berhasil terdaftar! Welcome to the club! 🎉</string>
     <string name="translate">Terjemahan</string>
     <string name="list_story_empty">Sayang, feed story kosong hari ini</string>
+    <string name="title_activity_maps">Story on the Maps</string>
+    <string name="label_greet_maps">Perhatikan petanya,</string>
 </resources>

@@ -1,9 +1,10 @@
-package com.rickyslash.storyapp.ui.main
+package com.rickyslash.storyapp.ui.maps
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Spannable
@@ -13,7 +14,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
@@ -21,87 +21,90 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.api.response.ListStoryItem
-import com.rickyslash.storyapp.databinding.ActivityMainBinding
+import com.rickyslash.storyapp.databinding.ActivityMapsBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
+import com.rickyslash.storyapp.helper.limitString
 import com.rickyslash.storyapp.helper.titleSentence
 import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.addstory.AddStoryActivity
 import com.rickyslash.storyapp.ui.login.LoginActivity
-import com.rickyslash.storyapp.ui.maps.MapsActivity
-import com.rickyslash.storyapp.ui.storydetail.StoryDetailActivity
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-class MainActivity : AppCompatActivity() {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private lateinit var mainViewModel: MainViewModel
+    private lateinit var mapsViewModel: MapsViewModel
     private val binding by lazy(LazyThreadSafetyMode.NONE) {
-        ActivityMainBinding.inflate(layoutInflater)
+        ActivityMapsBinding.inflate(layoutInflater)
     }
 
+    private var isLoadingObserver: Observer<Boolean>? = null
     private var isErrorObserver: Observer<Boolean>? = null
     private var responseMessageObserver: Observer<String?>? = null
-    private var isLoadingObserver: Observer<Boolean>? = null
 
-    private fun showStoryDetails(data: ListStoryItem) {
-        val intent = Intent(this@MainActivity, StoryDetailActivity::class.java)
-        intent.putExtra(StoryDetailActivity.EXTRA_STORY_ITEM, data)
-        startActivity(intent)
-    }
+    private lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+
         setupView()
         setupViewModel()
-        setupAction()
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        mapUISettings()
     }
 
     private fun setupView() {
         supportActionBar?.apply {
             val text = SpannableString(supportActionBar?.title)
-            text.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@MainActivity, R.color.black)), 0, text.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            text.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@MapsActivity, R.color.black)), 0, text.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@MainActivity, R.color.teal_EDC)))
+            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@MapsActivity, R.color.teal_EDC)))
             title = text
-            setHomeAsUpIndicator(R.drawable.ic_polaroid_black_24)
-            setHomeActionContentDescription(getString(R.string.app_name))
             setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
         }
     }
 
     private fun setupViewModel() {
-        mainViewModel = ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(dataStore)))[MainViewModel::class.java]
-        mainViewModel.getUser().observe(this) { user ->
+        mapsViewModel = ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(dataStore)))[MapsViewModel::class.java]
+        mapsViewModel.getUser().observe(this) { user ->
             if (!user.isLogin) {
-                intent = Intent(this@MainActivity, LoginActivity::class.java)
+                intent = Intent(this@MapsActivity, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 finish()
             } else {
                 binding.tvGreetName.text = getString(R.string.greet_name, titleSentence(user.name))
-                setupUserLoggedIn(user.token)
+                setupMapData(user.token)
             }
         }
         observeLoading()
     }
 
-    private fun setupAction() {
-        setupRV()
-    }
-
-    private fun setupUserLoggedIn(token: String) {
-        mainViewModel.getStories(token)
+    private fun setupMapData(token: String) {
+        mapsViewModel.getStories(token)
         isErrorObserver = Observer { isError ->
             if (!isError) {
-                mainViewModel.listStoryItem.observe(this) {
+                mapsViewModel.listStoryItem.observe(this) {
                     if (it.isNotEmpty()) {
-                        binding.tvGreetWhatsup.text = getString(R.string.whatsup)
-                        setStoriesData(it)
+                        binding.tvGreetWhatsup.text = getString(R.string.label_greet_maps)
+                        setMarkerData(it)
                     } else {
                         binding.tvGreetWhatsup.text = getString(R.string.list_story_empty)
                         Toast.makeText(this, getString(R.string.list_story_empty), Toast.LENGTH_SHORT).show()
@@ -110,47 +113,49 @@ class MainActivity : AppCompatActivity() {
             }
         }
         responseMessageObserver = Observer { responseMessage ->
-            if (responseMessage != null && mainViewModel.isError.value == true) {
+            if (responseMessage != null && mapsViewModel.isError.value == true) {
                 Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
             }
         }
-        isErrorObserver?.let { mainViewModel.isError.observe(this, it) }
-        responseMessageObserver?.let { mainViewModel.responseMessage.observe(this, it) }
+        isErrorObserver?.let { mapsViewModel.isError.observe(this, it) }
+        responseMessageObserver?.let { mapsViewModel.responseMessage.observe(this, it) }
     }
 
-    private fun setupRV() {
-        val layoutManager = LinearLayoutManager(this)
-        binding.rvStories.layoutManager = layoutManager
-    }
-
-    private fun setStoriesData(storiesData: List<ListStoryItem>) {
-        val storiesAdapter = StoriesAdapter(storiesData)
-        binding.rvStories.adapter = storiesAdapter
-
-        storiesAdapter.setOnItemClickCallback(object : StoriesAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: ListStoryItem) {
-                showStoryDetails(data)
-            }
-        })
+    private fun setMarkerData(data: List<ListStoryItem>) {
+        data.forEach {
+            val latLng = LatLng(it.lat, it.lon)
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(it.name)
+                    .snippet(limitString(it.description, 30))
+            )
+        }
     }
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        binding.mainClHeader.visibility = if (isLoading) View.GONE else View.VISIBLE
-        binding.rvStories.visibility = if (isLoading) View.GONE else View.VISIBLE
+        binding.mapsClHeader.visibility = if (isLoading) View.GONE else View.VISIBLE
+        binding.map.visibility = if (isLoading) View.GONE else View.VISIBLE
     }
 
     private fun observeLoading() {
         isLoadingObserver = Observer { showLoading(it) }
         isLoadingObserver?.let {
-            mainViewModel.isLoading.observe(this, it)
+            mapsViewModel.isLoading.observe(this, it)
         }
+    }
+
+    private fun mapUISettings() {
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.uiSettings.isCompassEnabled = true
+        mMap.uiSettings.isMapToolbarEnabled = true
     }
 
     @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.dropdown_menu, menu)
+        inflater.inflate(R.menu.maps_activity_menu, menu)
         if (menu is MenuBuilder) {
             menu.setOptionalIconsVisible(true)
         }
@@ -160,19 +165,15 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                Toast.makeText(this@MainActivity, getString(R.string.dev_easter_web), Toast.LENGTH_SHORT).show()
+                finish()
                 true
             }
             R.id.add_story -> {
-                startActivity(Intent(this@MainActivity, AddStoryActivity::class.java))
-                true
-            }
-            R.id.menu_maps -> {
-                startActivity(Intent(this@MainActivity, MapsActivity::class.java))
+                startActivity(Intent(this@MapsActivity, AddStoryActivity::class.java))
                 true
             }
             R.id.menu_logout -> {
-                mainViewModel.logout()
+                mapsViewModel.logout()
                 true
             }
             R.id.menu_translate -> {
@@ -185,9 +186,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        isErrorObserver?.let(mainViewModel.isError::removeObserver)
-        responseMessageObserver?.let(mainViewModel.responseMessage::removeObserver)
-        isLoadingObserver?.let(mainViewModel.isLoading::removeObserver)
+        isLoadingObserver?.let(mapsViewModel.isLoading::removeObserver)
     }
 
 }

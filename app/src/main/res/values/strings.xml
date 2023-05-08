@@ -50,5 +50,7 @@
     <string name="success">Success</string>
     <string name="signup_success_desc">Congrats, you\'ve successfully registered! Welcome to the club! 🎉</string>
     <string name="translate">Translate</string>
-    <string name="list_story_empty">Sadly, the story feed is empty for today</string>
+    <string name="list_story_empty">Sadly, the story feed is currently empty</string>
+    <string name="title_activity_maps">Story on the Maps</string>
+    <string name="label_greet_maps">Check out the maps,</string>
 </resources>

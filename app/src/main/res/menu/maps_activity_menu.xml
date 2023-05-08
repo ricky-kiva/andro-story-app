@@ -5,12 +5,6 @@
     <group android:menuCategory="container">
 
         <item
-            android:id="@+id/menu_maps"
-            android:icon="@drawable/ic_baseline_place_black_24"
-            android:title="@string/add_story"
-            app:showAsAction="ifRoom"/>
-
-        <item
             android:id="@+id/add_story"
             android:icon="@drawable/ic_baseline_add_circle_black_24"
             android:title="@string/add_story"
