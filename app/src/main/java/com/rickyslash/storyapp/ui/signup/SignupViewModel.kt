@@ -1,16 +1,20 @@
 package com.rickyslash.storyapp.ui.signup
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rickyslash.storyapp.api.ApiConfig
 import com.rickyslash.storyapp.api.response.RegisterResponse
+import com.rickyslash.storyapp.model.UserSharedPreferences
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SignupViewModel: ViewModel() {
+class SignupViewModel(application: Application): ViewModel() {
+
+    private val userPreferences: UserSharedPreferences = UserSharedPreferences(application)
 
     private val _responseMessage = MutableLiveData<String?>()
     val responseMessage: LiveData<String?> = _responseMessage
@@ -23,7 +27,7 @@ class SignupViewModel: ViewModel() {
 
     fun userRegister(name: String, email: String, password: String) {
         _isLoading.value = true
-        val client = ApiConfig.getApiService().userRegister(name, email, password)
+        val client = ApiConfig.getApiService(userPreferences).userRegister(name, email, password)
         client.enqueue(object : Callback<RegisterResponse> {
             override fun onResponse(
                 call: Call<RegisterResponse>,

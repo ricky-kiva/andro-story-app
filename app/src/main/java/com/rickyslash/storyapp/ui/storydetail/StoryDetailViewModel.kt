@@ -1,16 +1,20 @@
 package com.rickyslash.storyapp.ui.storydetail
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.rickyslash.storyapp.model.UserPreference
-import kotlinx.coroutines.launch
+import com.rickyslash.storyapp.model.UserModel
+import com.rickyslash.storyapp.model.UserSharedPreferences
 
-class StoryDetailViewModel(private val pref: UserPreference): ViewModel() {
+class StoryDetailViewModel(application: Application): ViewModel() {
+
+    private val userPreferences: UserSharedPreferences = UserSharedPreferences(application)
+
+    fun getPreferences(): UserModel {
+        return userPreferences.getUser()
+    }
 
     fun logout() {
-        viewModelScope.launch {
-            pref.logout()
-        }
+        userPreferences.setUser(UserModel())
     }
 
 }

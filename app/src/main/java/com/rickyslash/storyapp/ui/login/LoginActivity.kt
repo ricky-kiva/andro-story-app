@@ -1,6 +1,5 @@
 package com.rickyslash.storyapp.ui.login
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,19 +7,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.databinding.ActivityLoginBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
-import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.main.MainActivity
 import com.rickyslash.storyapp.ui.signup.SignupActivity
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class LoginActivity : AppCompatActivity() {
 
@@ -45,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        loginViewModel = ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(dataStore)))[LoginViewModel::class.java]
+        loginViewModel = ViewModelProvider(this, ViewModelFactory(application))[LoginViewModel::class.java]
     }
 
     private fun setupAction() {

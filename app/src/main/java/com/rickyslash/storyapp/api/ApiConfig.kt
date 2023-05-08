@@ -1,6 +1,7 @@
 package com.rickyslash.storyapp.api
 
 import androidx.viewbinding.BuildConfig
+import com.rickyslash.storyapp.model.UserSharedPreferences
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -8,8 +9,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiConfig {
+
     companion object {
-        fun getApiService(token: String? = null): ApiService {
+        fun getApiService(userPreferences: UserSharedPreferences): ApiService {
+
             val loggingInterceptor = if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             } else {
@@ -18,6 +21,8 @@ class ApiConfig {
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
+
+            val token = userPreferences.getUser().token
 
             if (token != null) {
                 val authInterceptor = Interceptor { chain ->

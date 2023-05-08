@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.databinding.ActivitySignupBinding
+import com.rickyslash.storyapp.helper.ViewModelFactory
 import com.rickyslash.storyapp.ui.login.LoginActivity
 
 class SignupActivity : AppCompatActivity() {
@@ -35,7 +36,7 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        signupViewModel = ViewModelProvider(this)[SignupViewModel::class.java]
+        signupViewModel = ViewModelProvider(this, ViewModelFactory(application))[SignupViewModel::class.java]
     }
 
     private fun setupAction() {

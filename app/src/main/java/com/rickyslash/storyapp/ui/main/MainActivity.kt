@@ -1,7 +1,6 @@
 package com.rickyslash.storyapp.ui.main
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -16,9 +15,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.content.ContextCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,13 +23,10 @@ import com.rickyslash.storyapp.api.response.ListStoryItem
 import com.rickyslash.storyapp.databinding.ActivityMainBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
 import com.rickyslash.storyapp.helper.titleSentence
-import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.addstory.AddStoryActivity
 import com.rickyslash.storyapp.ui.login.LoginActivity
 import com.rickyslash.storyapp.ui.maps.MapsActivity
 import com.rickyslash.storyapp.ui.storydetail.StoryDetailActivity
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class MainActivity : AppCompatActivity() {
 
@@ -75,27 +68,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        mainViewModel = ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(dataStore)))[MainViewModel::class.java]
-        mainViewModel.getUser().observe(this) { user ->
-            if (!user.isLogin) {
-                intent = Intent(this@MainActivity, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-                finish()
-            } else {
-                binding.tvGreetName.text = getString(R.string.greet_name, titleSentence(user.name))
-                setupUserLoggedIn(user.token)
-            }
-        }
+        mainViewModel = ViewModelProvider(this, ViewModelFactory(application))[MainViewModel::class.java]
         observeLoading()
+        val user = mainViewModel.getPreferences()
+        if (!user.isLogin) {
+            intentBackToLogin()
+        } else {
+            binding.tvGreetName.text = getString(R.string.greet_name, user.name?.let { titleSentence(it) })
+            setupUserLoggedIn()
+        }
     }
 
     private fun setupAction() {
         setupRV()
     }
 
-    private fun setupUserLoggedIn(token: String) {
-        mainViewModel.getStories(token)
+    private fun setupUserLoggedIn() {
+        mainViewModel.getStories()
         isErrorObserver = Observer { isError ->
             if (!isError) {
                 mainViewModel.listStoryItem.observe(this) {
@@ -111,6 +100,10 @@ class MainActivity : AppCompatActivity() {
         }
         responseMessageObserver = Observer { responseMessage ->
             if (responseMessage != null && mainViewModel.isError.value == true) {
+                if (responseMessage == "Invalid token signature") {
+                    Toast.makeText(this, getString(R.string.warn_token_expired), Toast.LENGTH_SHORT).show()
+                    intentBackToLogin()
+                }
                 Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
             }
         }
@@ -147,6 +140,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun intentBackToLogin() {
+        val intent = Intent(this@MainActivity, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
+    }
+
     @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -173,6 +173,9 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_logout -> {
                 mainViewModel.logout()
+                if (!mainViewModel.getPreferences().isLogin) {
+                    intentBackToLogin()
+                }
                 true
             }
             R.id.menu_translate -> {

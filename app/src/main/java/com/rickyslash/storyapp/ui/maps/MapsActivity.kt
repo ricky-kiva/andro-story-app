@@ -1,7 +1,6 @@
 package com.rickyslash.storyapp.ui.maps
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
@@ -16,9 +15,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.content.ContextCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.GoogleMap
@@ -32,11 +28,8 @@ import com.rickyslash.storyapp.databinding.ActivityMapsBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
 import com.rickyslash.storyapp.helper.limitString
 import com.rickyslash.storyapp.helper.titleSentence
-import com.rickyslash.storyapp.model.UserPreference
 import com.rickyslash.storyapp.ui.addstory.AddStoryActivity
 import com.rickyslash.storyapp.ui.login.LoginActivity
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -65,7 +58,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+        setupMapData()
         mapUISettings()
     }
 
@@ -82,23 +75,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setupViewModel() {
-        mapsViewModel = ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(dataStore)))[MapsViewModel::class.java]
-        mapsViewModel.getUser().observe(this) { user ->
-            if (!user.isLogin) {
-                intent = Intent(this@MapsActivity, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-                finish()
-            } else {
-                binding.tvGreetName.text = getString(R.string.greet_name, titleSentence(user.name))
-                setupMapData(user.token)
-            }
-        }
+        mapsViewModel = ViewModelProvider(this, ViewModelFactory(application))[MapsViewModel::class.java]
         observeLoading()
+        val user = mapsViewModel.getPreferences()
+        if (!user.isLogin) {
+            intentBackToLogin()
+        } else {
+            binding.tvGreetName.text = getString(R.string.greet_name, user.name?.let { titleSentence(it) })
+        }
     }
 
-    private fun setupMapData(token: String) {
-        mapsViewModel.getStories(token)
+    private fun setupMapData() {
+        mapsViewModel.getStories()
         isErrorObserver = Observer { isError ->
             if (!isError) {
                 mapsViewModel.listStoryItem.observe(this) {
@@ -152,6 +140,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.uiSettings.isMapToolbarEnabled = true
     }
 
+    private fun intentBackToLogin() {
+        val intent = Intent(this@MapsActivity, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
+    }
+
     @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -174,6 +169,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             R.id.menu_logout -> {
                 mapsViewModel.logout()
+                if (!mapsViewModel.getPreferences().isLogin) {
+                    intentBackToLogin()
+                }
                 true
             }
             R.id.menu_translate -> {

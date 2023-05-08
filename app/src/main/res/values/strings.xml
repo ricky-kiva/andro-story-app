@@ -53,4 +53,5 @@
     <string name="list_story_empty">Sadly, the story feed is currently empty</string>
     <string name="title_activity_maps">Story on the Maps</string>
     <string name="label_greet_maps">Check out the maps,</string>
+    <string name="warn_token_expired">Token is Expired</string>
 </resources>

@@ -1,19 +1,21 @@
 package com.rickyslash.storyapp.ui.main
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.rickyslash.storyapp.api.ApiConfig
 import com.rickyslash.storyapp.api.response.AllStoriesResponse
 import com.rickyslash.storyapp.api.response.ListStoryItem
 import com.rickyslash.storyapp.model.UserModel
-import com.rickyslash.storyapp.model.UserPreference
+import com.rickyslash.storyapp.model.UserSharedPreferences
 import com.rickyslash.storyapp.ui.login.LoginViewModel
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel(private val pref: UserPreference): ViewModel() {
+class MainViewModel(application: Application): ViewModel() {
+
+    private val userPreferences: UserSharedPreferences = UserSharedPreferences(application)
 
     private val _listStoryItem = MutableLiveData<List<ListStoryItem>>()
     val listStoryItem: LiveData<List<ListStoryItem>> = _listStoryItem
@@ -27,19 +29,17 @@ class MainViewModel(private val pref: UserPreference): ViewModel() {
     private val _responseMessage = MutableLiveData<String?>()
     val responseMessage: LiveData<String?> = _responseMessage
 
-    fun getUser(): LiveData<UserModel> {
-        return pref.getUser().asLiveData()
+    fun getPreferences(): UserModel {
+        return userPreferences.getUser()
     }
 
     fun logout() {
-        viewModelScope.launch {
-            pref.logout()
-        }
+        userPreferences.setUser(UserModel())
     }
 
-    fun getStories(token: String) {
+    fun getStories() {
         _isLoading.value = true
-        val client = ApiConfig.getApiService(token).getStories()
+        val client = ApiConfig.getApiService(userPreferences).getStories()
         client.enqueue(object : Callback<AllStoriesResponse> {
             override fun onResponse(
                 call: Call<AllStoriesResponse>,

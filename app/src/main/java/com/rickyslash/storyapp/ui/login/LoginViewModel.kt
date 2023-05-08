@@ -1,17 +1,19 @@
 package com.rickyslash.storyapp.ui.login
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.rickyslash.storyapp.api.ApiConfig
 import com.rickyslash.storyapp.api.response.LoginResponse
 import com.rickyslash.storyapp.model.UserModel
-import com.rickyslash.storyapp.model.UserPreference
-import kotlinx.coroutines.launch
+import com.rickyslash.storyapp.model.UserSharedPreferences
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginViewModel(private val pref: UserPreference): ViewModel() {
+class LoginViewModel(application: Application): ViewModel() {
+
+    private val userPreferences: UserSharedPreferences = UserSharedPreferences(application)
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -22,15 +24,9 @@ class LoginViewModel(private val pref: UserPreference): ViewModel() {
     private val _responseMessage = MutableLiveData<String?>()
     val responseMessage: LiveData<String?> = _responseMessage
 
-    fun loginSuccess(user: UserModel) {
-        viewModelScope.launch {
-            pref.loginSuccess(user)
-        }
-    }
-
     fun userLogin(email: String, password: String) {
         _isLoading.value = true
-        val client = ApiConfig.getApiService().userLogin(email, password)
+        val client = ApiConfig.getApiService(userPreferences).userLogin(email, password)
         client.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(
                 call: Call<LoginResponse>,
@@ -42,9 +38,7 @@ class LoginViewModel(private val pref: UserPreference): ViewModel() {
                     if (responseBody != null) {
                         _isError.value = responseBody.error
                         _responseMessage.value = responseBody.message
-                        loginSuccess(
-                            UserModel(responseBody.loginResult.name, email, true, responseBody.loginResult.token)
-                        )
+                        userPreferences.setUser(UserModel(responseBody.loginResult.name, email, true, responseBody.loginResult.token))
                         _responseMessage.value = null
                     }
                 } else {

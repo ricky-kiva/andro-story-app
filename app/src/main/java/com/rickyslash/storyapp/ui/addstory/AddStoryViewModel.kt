@@ -1,19 +1,21 @@
 package com.rickyslash.storyapp.ui.addstory
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.rickyslash.storyapp.api.ApiConfig
 import com.rickyslash.storyapp.api.response.AddStoryResponse
 import com.rickyslash.storyapp.model.UserModel
-import com.rickyslash.storyapp.model.UserPreference
-import kotlinx.coroutines.launch
+import com.rickyslash.storyapp.model.UserSharedPreferences
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AddStoryViewModel(private val pref: UserPreference): ViewModel() {
+class AddStoryViewModel(application: Application): ViewModel() {
+
+    private val userPreferences: UserSharedPreferences = UserSharedPreferences(application)
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -24,19 +26,17 @@ class AddStoryViewModel(private val pref: UserPreference): ViewModel() {
     private val _responseMessage = MutableLiveData<String?>()
     val responseMessage: LiveData<String?> = _responseMessage
 
-    fun getUser(): LiveData<UserModel> {
-        return pref.getUser().asLiveData()
+    fun getPreferences(): UserModel {
+        return userPreferences.getUser()
     }
 
     fun logout() {
-        viewModelScope.launch {
-            pref.logout()
-        }
+        userPreferences.setUser(UserModel())
     }
 
-    fun uploadStory(token: String, file: MultipartBody.Part, desc: RequestBody) {
+    fun uploadStory(file: MultipartBody.Part, desc: RequestBody) {
         _isLoading.value = true
-        val client = ApiConfig.getApiService(token).uploadStory(file, desc)
+        val client = ApiConfig.getApiService(userPreferences).uploadStory(file, desc)
         client.enqueue(object : Callback<AddStoryResponse> {
             override fun onResponse(
                 call: Call<AddStoryResponse>,
