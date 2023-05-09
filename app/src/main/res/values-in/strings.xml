@@ -55,4 +55,5 @@
     <string name="title_activity_maps">Story on the Maps</string>
     <string name="label_greet_maps">Perhatikan petanya,</string>
     <string name="warn_token_expired">Token kadaluarsa</string>
+    <string name="retry">Coba lagi</string>
 </resources>

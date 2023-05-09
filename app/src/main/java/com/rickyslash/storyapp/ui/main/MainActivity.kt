@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.api.response.ListStoryItem
+import com.rickyslash.storyapp.data.StoryPagingSource
 import com.rickyslash.storyapp.databinding.ActivityMainBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
 import com.rickyslash.storyapp.helper.titleSentence
@@ -75,50 +77,57 @@ class MainActivity : AppCompatActivity() {
             intentBackToLogin()
         } else {
             binding.tvGreetName.text = getString(R.string.greet_name, user.name?.let { titleSentence(it) })
-            setupUserLoggedIn()
+            // setupUserLoggedIn()
         }
     }
 
     private fun setupAction() {
         setupRV()
+        setStoriesData()
     }
 
-    private fun setupUserLoggedIn() {
-        mainViewModel.getStories()
-        isErrorObserver = Observer { isError ->
-            if (!isError) {
-                mainViewModel.listStoryItem.observe(this) {
-                    if (it.isNotEmpty()) {
-                        binding.tvGreetWhatsup.text = getString(R.string.whatsup)
-                        setStoriesData(it)
-                    } else {
-                        binding.tvGreetWhatsup.text = getString(R.string.list_story_empty)
-                        Toast.makeText(this, getString(R.string.list_story_empty), Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-        responseMessageObserver = Observer { responseMessage ->
-            if (responseMessage != null && mainViewModel.isError.value == true) {
-                if (responseMessage == "Invalid token signature") {
-                    Toast.makeText(this, getString(R.string.warn_token_expired), Toast.LENGTH_SHORT).show()
-                    intentBackToLogin()
-                }
-                Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
-            }
-        }
-        isErrorObserver?.let { mainViewModel.isError.observe(this, it) }
-        responseMessageObserver?.let { mainViewModel.responseMessage.observe(this, it) }
-    }
+//    private fun setupUserLoggedIn() {
+//        mainViewModel.getStories()
+//        isErrorObserver = Observer { isError ->
+//            if (!isError) {
+//                mainViewModel.listStoryItem.observe(this) {
+//                    if (it.isNotEmpty()) {
+//                        binding.tvGreetWhatsup.text = getString(R.string.whatsup)
+//                    } else {
+//                        binding.tvGreetWhatsup.text = getString(R.string.list_story_empty)
+//                        Toast.makeText(this, getString(R.string.list_story_empty), Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//        }
+//        responseMessageObserver = Observer { responseMessage ->
+//            if (responseMessage != null && mainViewModel.isError.value == true) {
+//                if (responseMessage == "Invalid token signature") {
+//                    Toast.makeText(this, getString(R.string.warn_token_expired), Toast.LENGTH_SHORT).show()
+//                    intentBackToLogin()
+//                }
+//                Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//        isErrorObserver?.let { mainViewModel.isError.observe(this, it) }
+//        responseMessageObserver?.let { mainViewModel.responseMessage.observe(this, it) }
+//    }
 
     private fun setupRV() {
         val layoutManager = LinearLayoutManager(this)
         binding.rvStories.layoutManager = layoutManager
     }
 
-    private fun setStoriesData(storiesData: List<ListStoryItem>) {
-        val storiesAdapter = StoriesAdapter(storiesData)
-        binding.rvStories.adapter = storiesAdapter
+    private fun setStoriesData() {
+        val storiesAdapter = StoriesAdapter()
+        binding.rvStories.adapter = storiesAdapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                storiesAdapter.retry()
+            }
+        )
+        mainViewModel.story.observe(this) {
+            storiesAdapter.submitData(lifecycle, it)
+        }
 
         storiesAdapter.setOnItemClickCallback(object : StoriesAdapter.OnItemClickCallback {
             override fun onItemClicked(data: ListStoryItem) {
@@ -191,6 +200,10 @@ class MainActivity : AppCompatActivity() {
         isErrorObserver?.let(mainViewModel.isError::removeObserver)
         responseMessageObserver?.let(mainViewModel.responseMessage::removeObserver)
         isLoadingObserver?.let(mainViewModel.isLoading::removeObserver)
+    }
+
+    companion object {
+        private val TAG = MainActivity::class.java.simpleName
     }
 
 }

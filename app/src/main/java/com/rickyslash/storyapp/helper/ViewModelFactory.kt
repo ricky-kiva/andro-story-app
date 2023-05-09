@@ -3,6 +3,7 @@ package com.rickyslash.storyapp.helper
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.rickyslash.storyapp.helper.di.Injection
 import com.rickyslash.storyapp.ui.addstory.AddStoryViewModel
 import com.rickyslash.storyapp.ui.login.LoginViewModel
 import com.rickyslash.storyapp.ui.main.MainViewModel
@@ -15,7 +16,7 @@ class ViewModelFactory(private val application: Application): ViewModelProvider.
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(MainViewModel::class.java) -> {
-                MainViewModel(application) as T
+                MainViewModel(application, Injection.provideRepository(application)) as T
             }
             modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
                 LoginViewModel(application) as T

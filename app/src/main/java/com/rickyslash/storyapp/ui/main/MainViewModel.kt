@@ -3,9 +3,12 @@ package com.rickyslash.storyapp.ui.main
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.rickyslash.storyapp.api.ApiConfig
 import com.rickyslash.storyapp.api.response.AllStoriesResponse
 import com.rickyslash.storyapp.api.response.ListStoryItem
+import com.rickyslash.storyapp.data.StoryRepository
 import com.rickyslash.storyapp.model.UserModel
 import com.rickyslash.storyapp.model.UserSharedPreferences
 import com.rickyslash.storyapp.ui.login.LoginViewModel
@@ -13,7 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel(application: Application): ViewModel() {
+class MainViewModel(application: Application, storyRepository: StoryRepository): ViewModel() {
 
     private val userPreferences: UserSharedPreferences = UserSharedPreferences(application)
 
@@ -28,6 +31,9 @@ class MainViewModel(application: Application): ViewModel() {
 
     private val _responseMessage = MutableLiveData<String?>()
     val responseMessage: LiveData<String?> = _responseMessage
+
+    val story: LiveData<PagingData<ListStoryItem>> =
+        storyRepository.getStories().cachedIn(viewModelScope)
 
     fun getPreferences(): UserModel {
         return userPreferences.getUser()

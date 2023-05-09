@@ -45,4 +45,11 @@ interface ApiService {
         @Part("description") description: RequestBody
     ): Call<AddStoryResponse>
 
+    @GET("/v1/stories")
+    suspend fun getStoriesForPaging(
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 10,
+        @Query("location") location: Int = 0
+    ): AllStoriesResponse
+
 }
