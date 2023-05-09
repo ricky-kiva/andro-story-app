@@ -37,7 +37,6 @@ class StoryPagingSource(private val apiService: ApiService): PagingSource<Int, L
     }
 
     private companion object {
-        private val TAG = StoriesAdapter::class.java.simpleName
         const val INITIAL_PAGE_INDEX = 1
     }
 
