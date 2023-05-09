@@ -2,6 +2,7 @@ package com.rickyslash.storyapp.ui.maps
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.api.response.ListStoryItem
@@ -59,6 +62,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         setupMapData()
+        setMapStyle()
         mapUISettings()
     }
 
@@ -140,6 +144,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.uiSettings.isMapToolbarEnabled = true
     }
 
+    private fun setMapStyle() {
+        try {
+            val success = mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+            if (!success) {
+                Log.e(TAG, "Style parsing failed")
+            }
+        } catch (e: Resources.NotFoundException) {
+            Log.e(TAG, "Can't find style. Error: $e")
+        }
+    }
+
     private fun intentBackToLogin() {
         val intent = Intent(this@MapsActivity, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -185,6 +200,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onDestroy() {
         super.onDestroy()
         isLoadingObserver?.let(mapsViewModel.isLoading::removeObserver)
+    }
+
+    companion object {
+        private val TAG = MapsActivity::class.java.simpleName
     }
 
 }
