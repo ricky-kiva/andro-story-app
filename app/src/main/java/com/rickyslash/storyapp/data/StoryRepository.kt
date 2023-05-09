@@ -1,21 +1,21 @@
 package com.rickyslash.storyapp.data
 
 import androidx.lifecycle.LiveData
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.liveData
+import androidx.paging.*
 import com.rickyslash.storyapp.api.ApiService
 import com.rickyslash.storyapp.api.response.ListStoryItem
+import com.rickyslash.storyapp.database.StoryDatabase
 
-class StoryRepository(private val apiService: ApiService) {
+class StoryRepository(private val storyDatabase: StoryDatabase, private val apiService: ApiService) {
     fun getStories(): LiveData<PagingData<ListStoryItem>> {
+        @OptIn(ExperimentalPagingApi::class)
         return Pager(
             config = PagingConfig(
                 pageSize = 5
             ),
+            remoteMediator = StoryRemoteMediator(storyDatabase, apiService),
             pagingSourceFactory = {
-                StoryPagingSource(apiService)
+                storyDatabase.storyDao().getAllStory()
             }
         ).liveData
     }

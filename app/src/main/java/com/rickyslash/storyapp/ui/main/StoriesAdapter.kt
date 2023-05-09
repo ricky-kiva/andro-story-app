@@ -1,7 +1,6 @@
 package com.rickyslash.storyapp.ui.main
 
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -9,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rickyslash.storyapp.api.response.ListStoryItem
-import com.rickyslash.storyapp.data.StoryPagingSource
 import com.rickyslash.storyapp.databinding.ItemStoryBinding
 import com.rickyslash.storyapp.helper.formatDate
 import com.rickyslash.storyapp.helper.getRandomMaterialColor
@@ -22,7 +20,7 @@ class StoriesAdapter: PagingDataAdapter<ListStoryItem, StoriesAdapter.ViewHolder
         this.onItemClickCallback = onItemClickCallback
     }
 
-    inner class ViewHolder(var binding: ItemStoryBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private var binding: ItemStoryBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(data: ListStoryItem) {
             binding.tvName.text = data.name
             binding.tvDate.text = formatDate(data.createdAt)

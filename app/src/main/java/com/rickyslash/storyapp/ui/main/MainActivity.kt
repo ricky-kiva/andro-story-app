@@ -8,7 +8,6 @@ import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rickyslash.storyapp.R
 import com.rickyslash.storyapp.api.response.ListStoryItem
-import com.rickyslash.storyapp.data.StoryPagingSource
 import com.rickyslash.storyapp.databinding.ActivityMainBinding
 import com.rickyslash.storyapp.helper.ViewModelFactory
 import com.rickyslash.storyapp.helper.titleSentence
@@ -84,34 +82,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupAction() {
         setupRV()
         setStoriesData()
+        binding.rvStories.scrollToPosition(0)
     }
-
-//    private fun setupUserLoggedIn() {
-//        mainViewModel.getStories()
-//        isErrorObserver = Observer { isError ->
-//            if (!isError) {
-//                mainViewModel.listStoryItem.observe(this) {
-//                    if (it.isNotEmpty()) {
-//                        binding.tvGreetWhatsup.text = getString(R.string.whatsup)
-//                    } else {
-//                        binding.tvGreetWhatsup.text = getString(R.string.list_story_empty)
-//                        Toast.makeText(this, getString(R.string.list_story_empty), Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//        }
-//        responseMessageObserver = Observer { responseMessage ->
-//            if (responseMessage != null && mainViewModel.isError.value == true) {
-//                if (responseMessage == "Invalid token signature") {
-//                    Toast.makeText(this, getString(R.string.warn_token_expired), Toast.LENGTH_SHORT).show()
-//                    intentBackToLogin()
-//                }
-//                Toast.makeText(this, responseMessage, Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//        isErrorObserver?.let { mainViewModel.isError.observe(this, it) }
-//        responseMessageObserver?.let { mainViewModel.responseMessage.observe(this, it) }
-//    }
 
     private fun setupRV() {
         val layoutManager = LinearLayoutManager(this)
@@ -200,10 +172,6 @@ class MainActivity : AppCompatActivity() {
         isErrorObserver?.let(mainViewModel.isError::removeObserver)
         responseMessageObserver?.let(mainViewModel.responseMessage::removeObserver)
         isLoadingObserver?.let(mainViewModel.isLoading::removeObserver)
-    }
-
-    companion object {
-        private val TAG = MainActivity::class.java.simpleName
     }
 
 }
