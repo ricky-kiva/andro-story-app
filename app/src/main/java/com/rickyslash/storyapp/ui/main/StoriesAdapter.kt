@@ -43,7 +43,7 @@ class StoriesAdapter: PagingDataAdapter<ListStoryItem, StoriesAdapter.ViewHolder
         val data = getItem(position)
         if (data != null) {
             holder.bind(data)
-            //holder.itemView.setOnClickListener { onItemClickCallback.onItemClicked(storyList[position]) }
+            holder.itemView.setOnClickListener { onItemClickCallback.onItemClicked(data) }
         }
     }
 
