@@ -1,6 +1,5 @@
 package com.rickyslash.storyapp.ui.maps
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.rickyslash.storyapp.api.ApiConfig
@@ -12,9 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MapsViewModel(application: Application): ViewModel() {
-
-    private val userPreferences: UserSharedPreferences = UserSharedPreferences(application)
+class MapsViewModel(private val userPreferences: UserSharedPreferences): ViewModel() {
 
     private val _listStoryItem = MutableLiveData<List<ListStoryItem>>()
     val listStoryItem: LiveData<List<ListStoryItem>> = _listStoryItem

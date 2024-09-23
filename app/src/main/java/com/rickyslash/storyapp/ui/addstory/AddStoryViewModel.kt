@@ -1,6 +1,5 @@
 package com.rickyslash.storyapp.ui.addstory
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.rickyslash.storyapp.api.ApiConfig
@@ -13,9 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AddStoryViewModel(application: Application): ViewModel() {
-
-    private val userPreferences: UserSharedPreferences = UserSharedPreferences(application)
+class AddStoryViewModel(private val userPreferences: UserSharedPreferences): ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading

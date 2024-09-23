@@ -1,5 +1,6 @@
 package com.rickyslash.storyapp.helper.di
 
+import android.app.Application
 import android.content.Context
 import com.rickyslash.storyapp.api.ApiConfig
 import com.rickyslash.storyapp.data.StoryRepository
@@ -12,5 +13,8 @@ object Injection {
         val database = StoryDatabase.getDatabase(context)
         val apiService = ApiConfig.getApiService(userSharedPreferences)
         return StoryRepository(database, apiService)
+    }
+    fun providePreferences(application: Application): UserSharedPreferences {
+        return UserSharedPreferences(application)
     }
 }

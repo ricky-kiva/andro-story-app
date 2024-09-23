@@ -1,6 +1,5 @@
 package com.rickyslash.storyapp.ui.main
 
-import android.app.Application
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -9,9 +8,7 @@ import com.rickyslash.storyapp.data.StoryRepository
 import com.rickyslash.storyapp.model.UserModel
 import com.rickyslash.storyapp.model.UserSharedPreferences
 
-class MainViewModel(application: Application, storyRepository: StoryRepository): ViewModel() {
-
-    private val userPreferences: UserSharedPreferences = UserSharedPreferences(application)
+class MainViewModel(private val userPreferences: UserSharedPreferences, storyRepository: StoryRepository): ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading

@@ -16,22 +16,22 @@ class ViewModelFactory(private val application: Application): ViewModelProvider.
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(MainViewModel::class.java) -> {
-                MainViewModel(application, Injection.provideRepository(application)) as T
+                MainViewModel(Injection.providePreferences(application), Injection.provideRepository(application)) as T
             }
             modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
-                LoginViewModel(application) as T
+                LoginViewModel(Injection.providePreferences(application)) as T
             }
             modelClass.isAssignableFrom(SignupViewModel::class.java) -> {
-                SignupViewModel(application) as T
+                SignupViewModel(Injection.providePreferences(application)) as T
             }
             modelClass.isAssignableFrom(StoryDetailViewModel::class.java) -> {
-                StoryDetailViewModel(application) as T
+                StoryDetailViewModel(Injection.providePreferences(application)) as T
             }
             modelClass.isAssignableFrom(AddStoryViewModel::class.java) -> {
-                AddStoryViewModel(application) as T
+                AddStoryViewModel(Injection.providePreferences(application)) as T
             }
             modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
-                MapsViewModel(application) as T
+                MapsViewModel(Injection.providePreferences(application)) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }

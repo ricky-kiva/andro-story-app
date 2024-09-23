@@ -75,7 +75,6 @@ class MainActivity : AppCompatActivity() {
             intentBackToLogin()
         } else {
             binding.tvGreetName.text = getString(R.string.greet_name, user.name?.let { titleSentence(it) })
-            // setupUserLoggedIn()
         }
     }
 
@@ -100,7 +99,6 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.story.observe(this) {
             storiesAdapter.submitData(lifecycle, it)
         }
-
         storiesAdapter.setOnItemClickCallback(object : StoriesAdapter.OnItemClickCallback {
             override fun onItemClicked(data: ListStoryItem) {
                 showStoryDetails(data)

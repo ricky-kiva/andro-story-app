@@ -1,6 +1,5 @@
 package com.rickyslash.storyapp.ui.signup
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,9 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SignupViewModel(application: Application): ViewModel() {
-
-    private val userPreferences: UserSharedPreferences = UserSharedPreferences(application)
+class SignupViewModel(private val userPreferences: UserSharedPreferences): ViewModel() {
 
     private val _responseMessage = MutableLiveData<String?>()
     val responseMessage: LiveData<String?> = _responseMessage
